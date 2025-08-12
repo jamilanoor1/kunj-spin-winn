@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kunj Restaurant Spin & Win</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f8f0e3;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        color: #d35400;
+    }
+    .wheel-container {
+        position: relative;
+        margin: auto;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 10px solid #d35400;
+    }
+    canvas {
+        transform: rotate(0deg);
+        transition: transform 2s ease-out;
+    }
+    .spin-btn {
+        background: #d35400;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+    .spin-btn:hover {
+        background: #e67e22;
+    }
+    #result {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #27ae60;
+    }
+</style>
+</head>
+<body>
+
+<h1>🎉 Kunj Restaurant – Spin & Win 🎉</h1>
+<div class="wheel-container">
+    <canvas id="wheel" width="300" height="300"></canvas>
+</div>
+<button class="spin-btn" onclick="spinWheel()">Spin</button>
+<div id="result"></div>
+
+<script>
+    const wheelCanvas = document.getElementById("wheel");
+    const ctx = wheelCanvas.getContext("2d");
+
+    const prizes = [
+        "10% OFF on your total bill",
+        "Free Drink",
+        "20% OFF on your total bill",
+        "Free Dessert",
+        "5% OFF on your total bill",
+        "Free Fries"
+    ];
+
+    const colors = ["#f1c40f", "#e67e22", "#e74c3c", "#2ecc71", "#3498db", "#9b59b6"];
+
+    let startAngle = 0;
+    let arc = Math.PI / (prizes.length / 2);
+    let currentRotation = 0; // Keeps track of total rotation
+
+    function drawWheel() {
+        for (let i = 0; i < prizes.length; i++) {
+            const angle = startAngle + i * arc;
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.beginPath();
+            ctx.moveTo(150, 150);
+            ctx.arc(150, 150, 150, angle, angle + arc, false);
+            ctx.lineTo(150, 150);
+            ctx.fill();
+            ctx.save();
+            ctx.translate(150, 150);
+            ctx.rotate(angle + arc / 2);
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(prizes[i], 50, 5);
+            ctx.restore();
+        }
+    }
+
+    function spinWheel() {
+        const spinAmount = Math.random() * 360 + 720; // random + 2 turns
+        currentRotation += spinAmount; // Keep spinning forward
+        wheelCanvas.style.transform = `rotate(${currentRotation}deg)`;
+
+        setTimeout(() => {
+            const degrees = currentRotation % 360;
+            const index = Math.floor((prizes.length - (degrees / (360 / prizes.length))) % prizes.length);
+            document.getElementById("result").innerText = "🎁 You won: " + prizes[index];
+        }, 2000);
+    }
+
+    drawWheel();
+</script>
+
+</body>
+</html>
